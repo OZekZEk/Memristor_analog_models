@@ -1,0 +1,32 @@
+// VerilogA for Verilog_A_Codes, knowm, veriloga
+`include &quot;constants.vams&quot;
+`include &quot;disciplines.vams&quot;
+module knowm (p,n);
+input p;//positive pin
+output n;//negative pin
+electrical p,n;
+parameter real R_OFF=1500;
+parameter real R_ON=500;
+parameter real V_OFF=0.27;
+parameter real V_ON=0.27;
+parameter real TAU=0.0001;
+parameter real VT=26e-3;
+real X;
+analog begin
+@ (initial_step) begin
+X = 1e-5;
+end
+X = idt((1/TAU)*((1/(1+exp(-1/VT*(V(p,n)-V_ON))))*(1-
+
+X)-(1-(1/(1+exp(-1/VT*(V(p,n)+V_OFF)))))*X),0);
+
+if (X&gt;1) begin
+X=1;
+end
+if (X&lt;0) begin
+X=0;
+end
+
+I(p,n) &lt;+ (X/R_ON+(1-X)/R_OFF)*V(p,n);
+end
+endmodule

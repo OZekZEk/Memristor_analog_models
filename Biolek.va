@@ -1,0 +1,43 @@
+// VerilogA for Verilog_A_Codes, biolek_mem, veriloga
+`include &quot;constants.vams&quot;
+`include &quot;disciplines.vams&quot;
+module biolek_mem(p, n);
+input p;
+output n;
+electrical p, n;
+parameter real Roff =100000;
+parameter real Ron = 1000;
+parameter real D = 10n;
+parameter real uv = 1e-15;
+parameter real p_coeff = 10;
+real R;
+real X;
+real stp;
+analog begin
+@ (initial_step) begin
+X = 1e-8;
+end
+if (-I(p,n)&gt;=0) begin
+stp=1;
+end
+if (-I(p,n)&lt;0) begin
+stp=0;
+end
+X = idt(uv*Ron/pow(D,2)*I(p,n)*(1-pow(X-
+
+stp,2*p_coeff)),0);
+
+if (X&gt;1) begin
+X=1;
+end
+if (X&lt;0) begin
+X=0;
+end
+
+R=Ron*X+Roff*(1-X);
+V(p,n) &lt;+ (Ron*X+Roff*(1-X))*I(p,n);
+end
+
+85
+
+endmodule
